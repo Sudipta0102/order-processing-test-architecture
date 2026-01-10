@@ -1,4 +1,4 @@
-package org.myApp.model;
+package org.myApp.orderservice.model;
 
 public enum OrderStatus {
 

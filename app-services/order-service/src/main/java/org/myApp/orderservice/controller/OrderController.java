@@ -1,9 +1,9 @@
-package org.myApp.controller;
+package org.myApp.orderservice.controller;
 
 import jakarta.validation.Valid;
-import org.myApp.model.CreateOrderRequest;
-import org.myApp.model.Order;
-import org.myApp.repository.OrderRepository;
+import org.myApp.orderservice.model.CreateOrderRequest;
+import org.myApp.orderservice.model.Order;
+import org.myApp.orderservice.repository.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

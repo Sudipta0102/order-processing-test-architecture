@@ -1,4 +1,4 @@
-package org.myApp.model;
+package org.myApp.orderservice.model;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;

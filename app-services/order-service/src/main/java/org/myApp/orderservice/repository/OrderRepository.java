@@ -1,8 +1,8 @@
-package org.myApp.repository;
+package org.myApp.orderservice.repository;
 
-import org.myApp.model.CreateOrderRequest;
-import org.myApp.model.Order;
-import org.myApp.model.OrderStatus;
+import org.myApp.orderservice.model.CreateOrderRequest;
+import org.myApp.orderservice.model.Order;
+import org.myApp.orderservice.model.OrderStatus;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
