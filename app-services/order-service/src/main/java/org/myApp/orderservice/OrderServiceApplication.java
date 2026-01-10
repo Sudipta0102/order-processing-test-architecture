@@ -6,6 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Entry point for Payment Service.
+ *
+ * It runs on port 8082 by default.
+ */
 @SpringBootApplication
 public class OrderServiceApplication {
 
