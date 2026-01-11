@@ -7,9 +7,7 @@ public class Order {
     private UUID id;
     private OrderStatus status;
 
-    public Order() {
-        // Default constructor for JSON serialization
-    }
+    public Order() {}
 
     public Order(UUID id, OrderStatus status) {
         this.id = id;

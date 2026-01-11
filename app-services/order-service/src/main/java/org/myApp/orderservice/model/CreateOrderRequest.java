@@ -1,5 +1,6 @@
 package org.myApp.orderservice.model;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
@@ -11,9 +12,7 @@ public class CreateOrderRequest {
     @Positive
     private int quantity;
 
-    public CreateOrderRequest(){
-        // for JSON deserialization
-    }
+    public CreateOrderRequest(){}
 
     public String getProductId(){
         return productId;
