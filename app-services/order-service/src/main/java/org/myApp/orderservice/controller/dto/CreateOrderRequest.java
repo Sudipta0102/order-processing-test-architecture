@@ -1,6 +1,5 @@
-package org.myApp.orderservice.model;
+package org.myApp.orderservice.controller.dto;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 

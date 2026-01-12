@@ -1,9 +1,10 @@
 package org.myApp.orderservice.controller;
 
 import jakarta.validation.Valid;
-import org.myApp.orderservice.model.CreateOrderRequest;
+import org.myApp.orderservice.controller.dto.CreateOrderRequest;
 import org.myApp.orderservice.model.Order;
-import org.myApp.orderservice.repository.OrderRepository;
+import org.myApp.orderservice.repository.InMemoryOrderRepository;
+import org.myApp.orderservice.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,10 +19,12 @@ import java.util.UUID;
 @Validated
 public class OrderController {
 
-    private final OrderRepository orderRepository;
+    private final InMemoryOrderRepository orderRepository;
+    private final OrderService orderService;
 
-    public OrderController(OrderRepository orderRepository){
+    public OrderController(InMemoryOrderRepository orderRepository, OrderService orderService){
         this.orderRepository = orderRepository;
+        this.orderService = orderService;
     }
 
 //    @GetMapping
@@ -43,7 +46,8 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<Order> createOrder(@Valid @RequestBody CreateOrderRequest request){
 
-        Order order = orderRepository.createOrder(request);
+        // Request is validated but not used internally. Kept in DTO package.
+        Order order = orderService.createOrder();
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -53,6 +57,7 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<Collection<Order>> getAllOrders(){
+
         return ResponseEntity.ok(orderRepository.findAll());
     }
 
