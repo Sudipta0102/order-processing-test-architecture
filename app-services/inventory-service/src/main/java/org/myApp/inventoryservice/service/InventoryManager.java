@@ -24,7 +24,7 @@ public class InventoryManager {
 
     public InventoryManager(){
         // some hardcoded stock.
-        stock.put("A1", 5);
+        stock.put("A1", 100);
         stock.put("B1", 9);
         stock.put("C1", 0);
     }

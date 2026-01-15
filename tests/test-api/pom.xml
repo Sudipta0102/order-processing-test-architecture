@@ -37,6 +37,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.27.6</version> <!-- Check for latest 2026 versions -->
+            <scope>test</scope>
+        </dependency>
+
         <!-- Services (to start them programmatically) -->
         <dependency>
             <groupId>org.myApp</groupId>
