@@ -62,7 +62,6 @@ public class OrderPollingUtility {
                 Thread.currentThread().interrupt();
                 throw new RuntimeException("polling interruption", e);
             }
-
         }
 
         // timeout is reached, order is still not terminated, fail explicitly instead of hanging forever.

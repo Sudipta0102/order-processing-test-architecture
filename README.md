@@ -66,6 +66,15 @@ These exclusions are intentional and documented.
 ## How to Use This Repository
 Instructions for running services and tests locally will be added here.
 
+We keep service availability as an external precondition so tests remain simple, explicit, and stable; lifecycle orchestration belongs to infra tooling, not API tests.
+
+To Run a Test:
+Simply open a terminal and run
+mvn -pl tests/test-folder -Dtest=TestName test
+
+Where test-folder can be test-api, test-contract and test-integration.
+
+
 ---
 
 ## Future Improvements
