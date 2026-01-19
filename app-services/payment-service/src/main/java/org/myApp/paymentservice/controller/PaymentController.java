@@ -1,11 +1,9 @@
 package org.myApp.paymentservice.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.Random;
@@ -41,6 +39,19 @@ public class PaymentController {
         // If order id is absent, generate one for logging
         String orderId = orderIdHeader!=null ? orderIdHeader : UUID.randomUUID().toString();
 
+        // -------- CONTRACT-TEST SHORT CIRCUIT --------
+        // In stub mode, we bypass all nondeterminism and return
+        // a deterministic response for fast, reliable contract tests.
+        if (InternalTestController.isStubMode()) {
+            log(orderId, "STUB_MODE_SUCCESS", 0);
+            return ResponseEntity.ok(Map.of("paymentStatus", "SUCCESS"));
+        }
+
+
+        // -------- REAL DEPENDENCY BEHAVIOR --------
+        // From this point onward, we intentionally model an unreliable dependency.
+        // This is NOT business logic; this is environmental reality.
+
         // Random number between 0 and 99
         int outcome = random.nextInt(100);
 
@@ -69,7 +80,11 @@ public class PaymentController {
 
                 Thread.sleep(delay);
 
-                // client should timeout before receiving this. Did the payment go through or not. No, it didn't.
+                // client should timeout before receiving this.
+                // The client gave up waiting before the server responded.It doesn't mean Payment failed and
+                // does not know the outcome.
+                // Order Service never sees the response but Payment Service DID complete successfully
+
                 return ResponseEntity.ok(Map.of("paymentStatus", "SUCCESS"));
             } else {
                 // FAILURE PATH (HTTP 500)
