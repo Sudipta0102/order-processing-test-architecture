@@ -10,6 +10,7 @@ package org.myApp.orderservice.service;
  * - Deciding final order state
  */
 
+import org.myApp.orderservice.controller.dto.CreateOrderRequest;
 import org.myApp.orderservice.model.InventoryResult;
 import org.myApp.orderservice.model.Order;
 import org.myApp.orderservice.model.OrderStatus;
@@ -60,10 +61,10 @@ public class OrderService {
      * - return immediately
      * - start async processing
      */
-    public Order createOrder(){
+    public Order createOrder(CreateOrderRequest request){
 
         // Create a new order with status PENDING
-        Order order = orderRepository.create();
+        Order order = orderRepository.create(request);
 
         log(order.getId(), "CREATED", null, null, OrderStatus.PENDING);
 
@@ -89,8 +90,12 @@ public class OrderService {
         try{
             // 1. CALLING AND CHECKING INVENTORY (this is concrete, deterministic)
 
+            Order order = orderRepository
+                    .findById(orderId)
+                    .orElseThrow(() -> new IllegalStateException("order not found: "+ orderId));
+
             // calling inventory service to reserve the stock
-            inventoryResult = inventoryClient.reserve(orderId);
+            inventoryResult = inventoryClient.reserve(orderId, order.getProductId(), order.getQuantity());
 
             // order must fail if inventory does not have the required quantity
             if(inventoryResult == InventoryResult.REJECTED){

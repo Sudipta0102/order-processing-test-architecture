@@ -37,14 +37,14 @@ public class InventoryClient {
      * - synchronous call
      *
      */
-    public InventoryResult reserve(UUID orderId){
+    public InventoryResult  reserve(UUID orderId, String productId, int quantity){
 
         try{
             // Hard-coding inventory inputs initially to isolate the async
             // orchestration before introducing domain complexity
             Map<String, Object> requestBody =  Map.of(
-                    "productId", "A1",
-                    "quantity", "1"
+                    "productId", productId,
+                    "quantity", quantity
             );
 
             // Wrapping request body in HttpEntity

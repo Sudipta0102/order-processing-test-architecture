@@ -47,7 +47,7 @@ public class OrderController {
     public ResponseEntity<Order> createOrder(@Valid @RequestBody CreateOrderRequest request){
 
         // Request is validated but not used internally. Kept in DTO package.
-        Order order = orderService.createOrder();
+        Order order = orderService.createOrder(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

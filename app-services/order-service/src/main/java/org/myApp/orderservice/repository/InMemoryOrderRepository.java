@@ -1,5 +1,6 @@
 package org.myApp.orderservice.repository;
 
+import org.myApp.orderservice.controller.dto.CreateOrderRequest;
 import org.myApp.orderservice.model.Order;
 import org.myApp.orderservice.model.OrderStatus;
 import org.springframework.stereotype.Repository;
@@ -46,13 +47,13 @@ public class InMemoryOrderRepository {
      * - Stores it in memory
      * - Returns it to the caller
      */
-    public Order create(){
+    public Order create(CreateOrderRequest request){
 
         // generating unique order identifier
         UUID orderId = UUID.randomUUID();
 
         // creating a new order with PENDING state
-        Order order = new Order(orderId, OrderStatus.PENDING);
+        Order order = new Order(orderId, OrderStatus.PENDING, request.getProductId(), request.getQuantity());
 
         // storing order in the map
         orders.put(orderId, order);
