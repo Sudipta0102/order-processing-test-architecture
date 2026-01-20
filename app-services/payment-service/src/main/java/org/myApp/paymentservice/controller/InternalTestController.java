@@ -2,6 +2,7 @@ package org.myApp.paymentservice.controller;
 
 
 import org.myApp.paymentservice.controller.dto.TestModeRequest;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,9 @@ public class InternalTestController {
     // holds current execution mode
     private static final AtomicReference<PaymentMode> CURRENT_EXEC_MODE = new AtomicReference<>(PaymentMode.NORMAL);
 
-    @PostMapping("/test-mode")
+    @PostMapping(
+            value = "/test-mode",
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public void enableTestMode(@RequestBody TestModeRequest request){
 
         try {
