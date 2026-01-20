@@ -46,62 +46,75 @@ public class PaymentController {
             log(orderId, "STUB_MODE_SUCCESS", 0);
             return ResponseEntity.ok(Map.of("paymentStatus", "SUCCESS"));
         }
+        // -------- INTEGRATION-TEST SHORT CIRCUIT --------
+        // In these modes (ALWAYS_FAIL and ALWAYS_TIMEOUT),
+        // unsuccessful payments are simulated.
+        else if (InternalTestController.isAlwaysFail()) {
+            log(orderId, "ALWAYS_FAIL_MODE_SUCCESS", 0);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+        } else if (InternalTestController.isAlwaysTimeout()) {
+            log(orderId, "ALWAYS_TIMEOUT_MODE_SUCCESS", 10000);
+            // After that sleep, it doesn’t matter what you return — the client will already have timed out.
+            return ResponseEntity.ok().build();
+        }else {
 
 
-        // -------- REAL DEPENDENCY BEHAVIOR --------
-        // From this point onward, we intentionally model an unreliable dependency.
-        // This is NOT business logic; this is environmental reality.
+            // -------- REAL DEPENDENCY BEHAVIOR --------
+            // From this point onward, we intentionally model an unreliable dependency.
+            // This is NOT business logic; this is environmental reality.
 
-        // Random number between 0 and 99
-        int outcome = random.nextInt(100);
+            // Random number between 0 and 99
+            int outcome = random.nextInt(100);
 
-        try {
-            /*
-             * 0–69   → SUCCESS (70%)
-             * 70–89  → TIMEOUT (20%)
-             * 90–99  → HTTP 500 (10%)
-             */
-            //SUCCESS
-            if (outcome < 70) {
+            try {
+                /*
+                 * 0–69   → SUCCESS (70%)
+                 * 70–89  → TIMEOUT (20%)
+                 * 90–99  → HTTP 500 (10%)
+                 */
+                //SUCCESS
+                if (outcome < 70) {
 
-                // Random short delay to simulate network / processing time
-                int delay = random.nextInt(500) + 100;
+                    // Random short delay to simulate network / processing time
+                    int delay = random.nextInt(500) + 100;
 
-                log(orderId, "SUCCESS", delay);
+                    log(orderId, "SUCCESS", delay);
 
-                Thread.sleep(delay);
-                return ResponseEntity.ok(Map.of("paymentStatus", "SUCCESS"));
+                    Thread.sleep(delay);
+                    return ResponseEntity.ok(Map.of("paymentStatus", "SUCCESS"));
 
-            } else if (outcome < 90) { // TIMEOUT
-                //sleep longer than any reasonable client timeout
-                int delay = 5000;
+                } else if (outcome < 90) { // TIMEOUT
+                    //sleep longer than any reasonable client timeout
+                    int delay = 5000;
 
-                log(orderId, "TIMEOUT", delay);
+                    log(orderId, "TIMEOUT", delay);
 
-                Thread.sleep(delay);
+                    Thread.sleep(delay);
 
-                // client should timeout before receiving this.
-                // The client gave up waiting before the server responded.It doesn't mean Payment failed and
-                // does not know the outcome.
-                // Order Service never sees the response but Payment Service DID complete successfully
+                    // client should timeout before receiving this.
+                    // The client gave up waiting before the server responded.It doesn't mean Payment failed and
+                    // does not know the outcome.
+                    // Order Service never sees the response but Payment Service DID complete successfully
 
-                return ResponseEntity.ok(Map.of("paymentStatus", "SUCCESS"));
-            } else {
-                // FAILURE PATH (HTTP 500)
-                log(orderId, "HTTP_500", 0);
+                    return ResponseEntity.ok(Map.of("paymentStatus", "SUCCESS"));
+                } else {
+                    // FAILURE PATH (HTTP 500)
+                    log(orderId, "HTTP_500", 0);
 
+                    return ResponseEntity
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .build();
+
+                }
+
+            } catch (InterruptedException e) {
+                // Restore interrupt flag and fail fast
+                Thread.currentThread().interrupt();
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .build();
-
             }
-
-        }catch(InterruptedException e){
-            // Restore interrupt flag and fail fast
-            Thread.currentThread().interrupt();
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .build();
         }
     }
 

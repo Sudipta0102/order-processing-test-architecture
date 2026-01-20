@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLOutput;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -18,18 +19,36 @@ import java.util.concurrent.atomic.AtomicReference;
 public class InternalTestController {
 
     // holds current execution mode
-    private static final AtomicReference<String> CURRENT_EXEC_MODE = new AtomicReference<>("DEFAULT");
+    private static final AtomicReference<PaymentMode> CURRENT_EXEC_MODE = new AtomicReference<>(PaymentMode.NORMAL);
 
     @PostMapping("/test-mode")
     public void enableTestMode(@RequestBody TestModeRequest request){
 
-        CURRENT_EXEC_MODE.set(request.getMode());
-
+        try {
+            CURRENT_EXEC_MODE.set(PaymentMode.from(request.getMode()));
+        }catch(IllegalArgumentException e){
+            // For invalid values other than what is mentioned in PaymentMode enum
+            // I don't want to crash the test because of this.
+            System.out.println("[PAYMENT][TEST-MODE] Invalid mode received: " + request.getMode());
+        }
     }
 
     public static boolean isStubMode(){
 
-        return "STUB".equals(CURRENT_EXEC_MODE.get());
+        return PaymentMode.STUB.equals(CURRENT_EXEC_MODE.get());
+        //return "STUB".equals(CURRENT_EXEC_MODE.get());
 
+    }
+
+    public static boolean isAlwaysFail() {
+        return PaymentMode.ALWAYS_FAIL.equals(CURRENT_EXEC_MODE.get());
+    }
+
+    public static boolean isAlwaysTimeout() {
+        return PaymentMode.ALWAYS_TIMEOUT.equals(CURRENT_EXEC_MODE.get());
+    }
+
+    public static boolean isNormalMode() {
+        return PaymentMode.NORMAL.equals(CURRENT_EXEC_MODE.get());
     }
 }
