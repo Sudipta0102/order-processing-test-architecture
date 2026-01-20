@@ -44,6 +44,17 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!-- Spring Boot plugin without repackage = non-executable JAR -->
+                            <!-- Result: Maven builds a plain JAR, not an executable Boot JAR , Docker fails -->
+                            <!-- Using spring-boot-starter-parent, this repackage is automatic, but for multi-module
+                             project, this is a correct way I think -->
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
