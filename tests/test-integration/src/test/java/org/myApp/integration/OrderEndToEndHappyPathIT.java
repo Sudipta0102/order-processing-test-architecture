@@ -44,7 +44,7 @@ public class OrderEndToEndHappyPathIT extends BaseIntegrationTest{
         String finalStatus = waitForFinalOrderStatus(orderId);
 
         Assertions.assertThat(finalStatus)
-                .as("Order would be FAILED when inventory fails to reserve")
+                .as("Order would be CONFIRMED when inventory has stocks")
                 .isEqualTo("CONFIRMED");
 
     }

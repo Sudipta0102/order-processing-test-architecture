@@ -16,7 +16,7 @@ public class OrderInventoryFailureIT extends BaseIntegrationTest{
         Response response = orderServiceRequest(correlationId)
                 .body("""
                               {
-                                "productId": "A1",
+                                "productId": "B1",
                                 "quantity": 999
                               }
                               """)
