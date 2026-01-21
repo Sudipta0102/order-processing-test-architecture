@@ -27,9 +27,10 @@ public class PaymentClient {
     // Blocking works because this runs in a background thread
     private final RestTemplate restTemplate = new RestTemplate();
 
-    // Hard-coded payment service URL
+    // Hard-coded payment service URL for docker
+    // for local: "http://localhost:8082/payments";
     private static final String PAYMENT_URL =
-            "http://localhost:8082/payments";
+            "http://payment-service:8082/payments";
 
     /**
      *

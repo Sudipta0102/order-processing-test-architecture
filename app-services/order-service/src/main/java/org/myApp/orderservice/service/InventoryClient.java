@@ -25,8 +25,9 @@ public class InventoryClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    // hard coded base URL (no config yet)
-    private static final String INVENTORY_URL = "http://localhost:8083/inventory/reserve";
+    // hard coded base URL (no config yet) for docker
+    // for localhost INVENTORY_URL = "http://localhost:8083/inventory/reserve"
+    private static final String INVENTORY_URL = "http://inventory-service:8083/inventory/reserve";
 
     /**
      *
