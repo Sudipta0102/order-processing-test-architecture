@@ -1,6 +1,7 @@
 package org.myApp.orderservice.service;
 
 import org.myApp.orderservice.model.PaymentResult;
+import org.myApp.orderservice.service.dto.PaymentResponseDto;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -50,19 +51,23 @@ public class PaymentClient {
             HttpEntity<Void> requestEntity = new HttpEntity<>(null);
 
             // Execute Http POST to payment service
-            ResponseEntity<Map> response =
+            ResponseEntity<PaymentResponseDto> response =
                     restTemplate.exchange(
                             URI.create(PAYMENT_URL),
                             HttpMethod.POST,
                             requestEntity,
-                            Map.class
+                            PaymentResponseDto.class
                     );
 
+            if(response.getBody() == null){
+                return PaymentResult.FAILED;
+            }
+
             // Extract "paymentStatus" field from response JSON
-            String status = String.valueOf(response.getBody().get("paymentStatus"));
+            //String status = String.valueOf(response.getBody().get("paymentStatus"));
 
             // translating response into domain result
-            if("SUCCESS".equals(status)){
+            if("SUCCESS".equals(response.getBody().getPaymentStatus())){
                 return PaymentResult.SUCCESS;
             }
 

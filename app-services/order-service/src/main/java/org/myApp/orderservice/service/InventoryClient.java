@@ -1,6 +1,7 @@
 package org.myApp.orderservice.service;
 
 import org.myApp.orderservice.model.InventoryResult;
+import org.myApp.orderservice.service.dto.InventoryResponseDto;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -52,19 +53,23 @@ public class InventoryClient {
             HttpEntity<Object> requestEntity = new HttpEntity<>(requestBody);
 
             // Executing Post call to inventory Service
-            ResponseEntity<Map> response =
+            ResponseEntity<InventoryResponseDto> response =
                     restTemplate.exchange(
                             URI.create(INVENTORY_URL),
                             HttpMethod.POST,
                             requestEntity,
-                            Map.class
+                            InventoryResponseDto.class
                     );
 
+            if(response.getBody() == null){
+                return InventoryResult.REJECTED;
+            }
+
             // Extracting "status" field from response JSON
-            String status = String.valueOf(response.getBody().get("status"));
+            // String status = String.valueOf(response.getBody().getStatus());
 
             // Converting Inventory Response into domain enum
-            if("RESERVED".equals(status)){
+            if("RESERVED".equals(response.getBody().getStatus())){
                 return InventoryResult.RESERVED;
             }
 
