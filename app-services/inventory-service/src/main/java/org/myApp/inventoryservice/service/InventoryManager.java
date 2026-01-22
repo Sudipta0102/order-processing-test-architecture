@@ -27,6 +27,10 @@ public class InventoryManager {
         stock.put("A1", 100);
         stock.put("B1", 9);
         stock.put("C1", 10);
+        stock.put("D1", 1);
+        stock.put("E1", 12);
+        stock.put("F1", 5);
+        stock.put("G1", 3);
     }
 
     /**
