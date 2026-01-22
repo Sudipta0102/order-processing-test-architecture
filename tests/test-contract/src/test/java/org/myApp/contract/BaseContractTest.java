@@ -41,6 +41,7 @@ public abstract class BaseContractTest {
 
         RestAssured.given()
                 .port(port)                             // Explicit port of the target service
+                .contentType("application/json") // change
                 .body(Map.of("mode", "STUB"))    // Simple request payload to enable Stub mode
                 .post("/internal/test-mode")          // Test-only Endpoint exposed by the service
                 .then()
