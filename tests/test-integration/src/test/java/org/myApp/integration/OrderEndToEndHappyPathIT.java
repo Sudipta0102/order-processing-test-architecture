@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.Map;
  *
  *
  */
+@Tag("integration")
 public class OrderEndToEndHappyPathIT extends BaseIntegrationTest{
 
 

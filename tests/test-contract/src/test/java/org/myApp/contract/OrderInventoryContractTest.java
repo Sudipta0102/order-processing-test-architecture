@@ -1,6 +1,7 @@
 package org.myApp.contract;
 
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.Map;
  *
  * Inventory is deterministic by design, So no stub mode toggling is required.
  */
+@Tag("contract")
 public class OrderInventoryContractTest extends BaseContractTest{
 
     // inventory service runs on a fixed local port

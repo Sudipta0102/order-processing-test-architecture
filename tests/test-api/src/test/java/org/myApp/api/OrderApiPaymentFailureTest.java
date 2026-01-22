@@ -3,6 +3,7 @@ package org.myApp.api;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -17,6 +18,8 @@ import java.util.UUID;
  * - Async processing happens and it handles payment failure
  * - Order eventually transitions to FAILED
  */
+@Tag("api")
+@Tag("payment-down")
 public class OrderApiPaymentFailureTest extends BaseApiTest{
 
     @Test

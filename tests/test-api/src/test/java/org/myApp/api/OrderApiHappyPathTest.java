@@ -3,6 +3,7 @@ package org.myApp.api;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -19,6 +20,7 @@ import java.util.UUID;
  * - order reaches a terminal state
  *
  */
+@Tag("api")
 public class OrderApiHappyPathTest extends BaseApiTest{
 
 

@@ -2,8 +2,10 @@ package org.myApp.integration;
 
 import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("integration")
 public class OrderInventoryFailureIT extends BaseIntegrationTest{
 
     @Test

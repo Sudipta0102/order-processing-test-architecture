@@ -4,6 +4,7 @@ package org.myApp.contract;
 import io.restassured.RestAssured;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test;
  * - timeouts
  * - flakiness
  */
+@Tag("contract")
 public class OrderPaymentContractTest extends BaseContractTest {
 
 

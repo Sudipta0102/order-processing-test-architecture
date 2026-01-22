@@ -3,6 +3,7 @@ package org.myApp.api;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -18,6 +19,8 @@ import java.util.UUID;
  * - Async processing happens and it handles inventory failure
  * - Order eventually transitions to FAILED
  */
+@Tag("api")
+@Tag("inventory-down")
 public class OrderApiInventoryFailureTest extends BaseApiTest{
 
     @Test
