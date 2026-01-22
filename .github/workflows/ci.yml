@@ -60,14 +60,14 @@ jobs:
 
       # 9. Run API tests (normal)
       - name: Run API tests (normal)
-        run: mvn -pl tests/test-api verify -Dgroups=api,!inventory-down,!payment-down
+        run: mvn -pl tests/test-api verify -Dgroups="api & !inventory-down & !payment-down"
 
       # 10. Inventory DOWN API tests
       - name: Stop inventory service
         run: docker compose stop inventory-service
 
       - name: Run inventory-down API tests
-        run: mvn -pl tests/test-api verify -Dgroups=inventory-down
+        run: mvn -pl tests/test-api verify -Dgroups="inventory-down"
 
       # 11. Payment DOWN API tests
       - name: Restart services
@@ -77,7 +77,7 @@ jobs:
         run: docker compose stop payment-service
 
       - name: Run payment-down API tests
-        run: mvn -pl tests/test-api verify -Dgroups=payment-down
+        run: mvn -pl tests/test-api  verify -Dgroups="payment-down"
 
       # 12. Teardown (always)
       - name: Shutdown services
