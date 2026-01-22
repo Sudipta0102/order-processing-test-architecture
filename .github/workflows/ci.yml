@@ -34,7 +34,7 @@ jobs:
 
       # 4. Build all services (creating jars)
       - name: Build all services
-        run: mvn clean package -DskipTests
+        run: mvn clean install -DskipTests
 
       # 5. Run Contract tests
       - name: Run contract tests
