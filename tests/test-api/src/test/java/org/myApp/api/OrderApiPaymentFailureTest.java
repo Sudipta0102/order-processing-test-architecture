@@ -23,7 +23,7 @@ public class OrderApiPaymentFailureTest extends BaseApiTest{
     public void TestCreateOrderWithPaymentServiceDown(){
 
         Map<String , Object> requestBody = new HashMap<>();
-        requestBody.put("productId", "A1");
+        requestBody.put("productId", "F1");
         requestBody.put("quantity", 1);
 
         // 1. CREATE ORDER
@@ -61,7 +61,7 @@ public class OrderApiPaymentFailureTest extends BaseApiTest{
         //System.out.println(response.asString());
         // 3. ASSERT FAILED
         Assertions.assertThat(finalStatus)
-                .as("Final Status is failed because Inventory is unavailable")
+                .as("Final Status is failed because Payment Service is unavailable")
                 .isEqualTo("FAILED");
     }
 }

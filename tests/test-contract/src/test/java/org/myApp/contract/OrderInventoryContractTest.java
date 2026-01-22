@@ -25,7 +25,7 @@ public class OrderInventoryContractTest extends BaseContractTest{
 
         baseRequest(INVENTORY_SERVICE_PORT)
                 .body(Map.of(
-                        "productId","A1",
+                        "productId","G1",
                         "quantity", 1
                 ))
                 .post("/inventory/reserve")

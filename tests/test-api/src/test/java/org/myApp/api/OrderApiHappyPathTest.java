@@ -26,7 +26,7 @@ public class OrderApiHappyPathTest extends BaseApiTest{
     public void TestCreateOrderAndReachTerminalState(){
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("productId", "A1");
+        requestBody.put("productId", "D1");
         requestBody.put("quantity", 1);
 
         // STEP 1. CREATE ORDER

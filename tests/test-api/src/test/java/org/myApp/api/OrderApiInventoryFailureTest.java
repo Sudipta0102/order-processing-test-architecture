@@ -24,7 +24,7 @@ public class OrderApiInventoryFailureTest extends BaseApiTest{
     public void TestCreateOrderWithInventoryServiceDown(){
 
         Map<String , Object> requestBody = new HashMap<>();
-        requestBody.put("productId", "A1");
+        requestBody.put("productId", "E1");
         requestBody.put("quantity", 1);
 
         // 1. CREATE ORDER
@@ -62,7 +62,7 @@ public class OrderApiInventoryFailureTest extends BaseApiTest{
         //System.out.println(response.asString());
         // 3. ASSERT FAILED
         Assertions.assertThat(finalStatus)
-                .as("Final Status is failed because Inventory is unavailable")
+                .as("Final Status is failed because Inventory Service is unavailable")
                 .isEqualTo("FAILED");
     }
 }
