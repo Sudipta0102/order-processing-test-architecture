@@ -60,7 +60,7 @@ jobs:
 
       # 9. Run API tests (normal)
       - name: Run API tests (normal)
-        run: mvn -pl tests/api-test verify -Dgroups=api,!inventory-down,!payment-down
+        run: mvn -pl tests/test-api verify -Dgroups=api,!inventory-down,!payment-down
 
       # 10. Inventory DOWN API tests
       - name: Stop inventory service
