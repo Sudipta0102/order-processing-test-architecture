@@ -38,7 +38,7 @@ jobs:
 
       # 5. Run Contract tests
       - name: Run contract tests
-        run: mvn -pl tests/test-contrast test -Dgroups=contract
+        run: mvn -pl tests/test-contract test -Dgroups=contract
 
       # 6. Start all services from docker
       - name: Start services
