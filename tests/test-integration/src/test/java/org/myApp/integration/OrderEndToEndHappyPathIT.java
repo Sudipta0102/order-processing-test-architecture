@@ -1,7 +1,12 @@
 package org.myApp.integration;
 
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 /**
  * End to end happy path
@@ -25,23 +30,18 @@ public class OrderEndToEndHappyPathIT extends BaseIntegrationTest{
         System.out.println("correlation Id :" + correlationId);
 
         // creating order
-        String orderId = orderServiceRequest(correlationId)
-                .body("""
-                        {
-                            "productId" : "A1",
-                            "quantity" : 1
-                        }
-                        """)
+        Response response = orderServiceRequest(correlationId)
+                .body(Map.of("productId", "A1", "quantity", 1))
                 .post("/orders")
                 .then()
-                .extract()
-                .jsonPath()
-                .getString("id");
+                .extract().response();
 
-        System.out.println("Order Id: " + orderId);
+        System.out.println("Order Creation response: " + response.asString());
 
         // wait until terminal state
-        String finalStatus = waitForFinalOrderStatus(orderId);
+        String finalStatus = waitForFinalOrderStatus(response.jsonPath().getString("id"));
+
+        System.out.println("Final Status from GET endpoint:" + finalStatus);
 
         Assertions.assertThat(finalStatus)
                 .as("Order would be CONFIRMED when inventory has stocks")
