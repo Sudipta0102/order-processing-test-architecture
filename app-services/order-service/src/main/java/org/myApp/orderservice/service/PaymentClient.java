@@ -2,6 +2,7 @@ package org.myApp.orderservice.service;
 
 import org.myApp.orderservice.model.PaymentResult;
 import org.myApp.orderservice.service.dto.PaymentResponseDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -29,18 +30,21 @@ public class PaymentClient {
     // Blocking works because this runs in a background thread
     private final RestTemplate restTemplate;
 
+    private final String PAYMENT_URL;
     // Hard-coded payment service URL for docker
     // for local: "http://localhost:8082/payments";
-    private static final String PAYMENT_URL =
-            "http://payment-service:8082/payments";
+    //private static final String PAYMENT_URL = "http://payment-service:8082/payments";
 
-    public PaymentClient(){
+
+    public PaymentClient(@Value("${payment.base-url}") String PAYMENT_URL){
+
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
 
         factory.setConnectTimeout(2000);
         factory.setReadTimeout(2000);
 
         this.restTemplate = new RestTemplate(factory);
+        this.PAYMENT_URL = PAYMENT_URL;
     }
 
     /**

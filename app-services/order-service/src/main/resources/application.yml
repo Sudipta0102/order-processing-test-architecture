@@ -1,0 +1,8 @@
+server:
+  port: 8081
+
+inventory:
+  base-url: http://localhost:8083/inventory/reserve
+
+payment:
+  base-url: http://localhost:8082/payments

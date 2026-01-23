@@ -3,21 +3,6 @@ version: "3.9"
 
 services:
 
-  order-service:
-    # build it first
-    build: ./app-services/order-service
-    # service name used by docker compose
-    image: app-services/order-service
-
-    container_name: order-service
-    ports:
-      - "8081:8081"
-
-    # ensures dependant services are started first, doesn't have to in healthy state
-    depends_on:
-      - payment-service
-      - inventory-service
-
   payment-service:
     build: ./app-services/payment-service
     image: app-services/payment-service
@@ -33,3 +18,21 @@ services:
 
     ports:
       - "8083:8083"
+
+  order-service:
+    # build it first
+    build: ./app-services/order-service
+    # service name used by docker compose
+    image: app-services/order-service
+
+    container_name: order-service
+    ports:
+      - "8081:8081"
+
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+    # ensures dependant services are started first, doesn't have to in healthy state
+    depends_on:
+      - payment-service
+      - inventory-service

@@ -2,6 +2,7 @@ package org.myApp.orderservice.service;
 
 import org.myApp.orderservice.model.InventoryResult;
 import org.myApp.orderservice.service.dto.InventoryResponseDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +30,12 @@ public class InventoryClient {
 
     // hard coded base URL (no config yet) for docker
     // for localhost INVENTORY_URL = "http://localhost:8083/inventory/reserve"
-    private static final String INVENTORY_URL = "http://inventory-service:8083/inventory/reserve";
+    //private static final String INVENTORY_URL = "http://inventory-service:8083/inventory/reserve";
 
-    public InventoryClient(){
+    private final String INVENTORY_URL;
+
+    public InventoryClient(@Value("${inventory.base-url}") String INVENTORY_URL){
+
         // request factory allows to define the time bounds.
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
 
@@ -40,6 +44,7 @@ public class InventoryClient {
         factory.setReadTimeout(20000);
 
         this.restTemplate = new RestTemplate(factory);
+        this.INVENTORY_URL = INVENTORY_URL;
     }
 
     /**
