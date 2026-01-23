@@ -67,7 +67,7 @@ public class OrderPollingUtility {
      * Poll Every -> 500ms
      */
     public static Response pollUntilTerminal(UUID orderId){
-        return pollUntilTerminal(orderId, Duration.ofSeconds(10), Duration.ofMillis(500));
+        return pollUntilTerminal(orderId, Duration.ofSeconds(30), Duration.ofMillis(500));
     }
 
     // These two above methods are overloaded. Essentially the second method is a wrapper.

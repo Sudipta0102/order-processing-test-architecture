@@ -56,7 +56,7 @@ public class OrderApiPaymentFailureTest extends BaseApiTest{
 
 
         // 2. POLLING UNTIL TERMINAL
-        Response finalResponse = OrderPollingUtility.pollUntilTerminal(orderId, Duration.ofSeconds(30), Duration.ofMillis(500));
+        Response finalResponse = OrderPollingUtility.pollUntilTerminal(orderId);
         //, Duration.ofSeconds(20), Duration.ofMillis(500));
 
         String finalStatus = finalResponse.jsonPath().getString("status");
