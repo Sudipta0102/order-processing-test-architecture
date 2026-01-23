@@ -46,7 +46,7 @@ jobs:
         run: |
           echo "Waiting for Order Service..."
           for i in {1..30}; do
-            curl -s http://localhost:8081/orders && break
+            curl -f http://localhost:8081/actuator/health && break
             sleep 2
           done
 
