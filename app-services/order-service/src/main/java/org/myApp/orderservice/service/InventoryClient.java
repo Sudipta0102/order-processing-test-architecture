@@ -5,6 +5,7 @@ import org.myApp.orderservice.service.dto.InventoryResponseDto;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,11 +25,22 @@ import java.util.UUID;
 public class InventoryClient {
 
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     // hard coded base URL (no config yet) for docker
     // for localhost INVENTORY_URL = "http://localhost:8083/inventory/reserve"
     private static final String INVENTORY_URL = "http://inventory-service:8083/inventory/reserve";
+
+    public InventoryClient(){
+        // request factory allows to define the time bounds.
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+
+        // fail fast if inventory is slow or unreachable
+        factory.setConnectTimeout(20000);
+        factory.setReadTimeout(20000);
+
+        this.restTemplate = new RestTemplate(factory);
+    }
 
     /**
      *

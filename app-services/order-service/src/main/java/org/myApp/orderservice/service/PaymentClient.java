@@ -5,6 +5,7 @@ import org.myApp.orderservice.service.dto.PaymentResponseDto;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
@@ -26,12 +27,21 @@ public class PaymentClient {
 
     // RestTemplate performs blocking HTTP calls.
     // Blocking works because this runs in a background thread
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     // Hard-coded payment service URL for docker
     // for local: "http://localhost:8082/payments";
     private static final String PAYMENT_URL =
             "http://payment-service:8082/payments";
+
+    public PaymentClient(){
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+
+        factory.setConnectTimeout(2000);
+        factory.setReadTimeout(2000);
+
+        this.restTemplate = new RestTemplate(factory);
+    }
 
     /**
      *
