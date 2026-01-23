@@ -3,10 +3,12 @@ package org.myApp.api;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.awaitility.Awaitility;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Utility class responsible for polling Order Service
@@ -33,42 +35,29 @@ public class OrderPollingUtility {
             Duration timeout,
             Duration pollInterval){
 
-        // Start time of polling
-        Instant startTime = Instant.now();
+        AtomicReference<Response> finalResponse = new AtomicReference<>();
 
-        // polling until timeout
-        while (Duration.between(startTime, Instant.now()).compareTo(timeout)<0){
+        Awaitility.await()
+                .atMost(timeout)
+                .pollInterval(pollInterval)
+                .ignoreExceptions()
+                .until(() ->{
+                    Response response = RestAssured
+                            .given()
+                            .when()
+                            .get("/orders"+orderId)
+                            .then()
+                            .extract().response();
 
-            // perform GET orders/{id}
-            Response response = RestAssured
-                    .given()
-                    .when()
-                    .get("/orders/" + orderId)
-                    .then()
-                    .extract()
-                    .response();
+                    String status  = response.jsonPath().getString("status");
 
-            //extract status
-            String status = response.jsonPath().getString("status");
+                    finalResponse.set(response);
 
-            if("CONFIRMED".equals(status) || "FAILED".equals(status)){
-                return response;
-            }
+                    return "CONFIRMED".equals(status) || "FAILED".equals(status);
+                });
 
-            // enabling polling interval
-            try {
-                Thread.sleep(pollInterval.toMillis());
-            }catch(InterruptedException e){
-                Thread.currentThread().interrupt();
-                throw new RuntimeException("polling interruption", e);
-            }
-        }
-
-        // timeout is reached, order is still not terminated, fail explicitly instead of hanging forever.
-        throw new RuntimeException(
-                "Order " + orderId + " didn't reach terminal state"
-        );
-
+        // return the final observed response after awaitility exits
+        return finalResponse.get();
     }
 
     /**
