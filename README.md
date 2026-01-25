@@ -1,81 +1,129 @@
-# order-processing-test-architecture
+# Order Processing Test Architecture
 
-## Overview
-This repository demonstrates a production-inspired test architecture for an asynchronous, distributed order processing system.
+## How to Read This Repository (For Reviewers)
 
-The focus is on:
-- Test strategy for distributed systems
-- Handling non-deterministic behavior
-- Managing flaky dependencies
-- Designing reliable CI feedback
-
-This is not a product implementation. It is a test-focused system designed to surface real-world quality challenges.
-
----
-
-## System Architecture
-High-level components:
-- API Gateway
-- Order Service
-- Payment Service (intentionally unreliable)
-- Inventory Service
-- Notification Worker (async)
-
-A simplified architecture diagram is included in `/docs`.
+- This repository is a **testing architecture showcase** focused on validating distributed, asynchronous workflows.
+- Start here:
+  - `TESTING_STRATEGY.md` → overall testing principles, taxonomy, and CI execution model
+  - `tests/` → tagged test layers (`unit`, `api`, `contract`, `integration`, `chaos`, `e2e`)
+  - `.github/workflows/ci.yml` → PR vs nightly validation strategy and failure signal separation
+- Key areas of focus:
+  - eventual consistency and async workflow validation
+  - controlled downstream instability (intentional chaos)
+  - scalable test suite design that remains reliable at 1000+ tests
 
 ---
 
-## Key Testing Challenges Addressed
-- Eventual consistency
-- Flaky downstream services
-- Test data isolation and cleanup
-- Failure classification in CI
+## Project Summary
+
+A runnable distributed order-processing system designed to demonstrate a **mature test strategy** for async workflows, partial failures, and high-signal CI execution.
 
 ---
 
-## Test Strategy (High Level)
-Testing is split across:
-- API tests
-- Contract tests
-- Limited integration tests
+## Key Testing Goals (Why This Exists)
 
-Details are documented in `/docs/test-strategy.md`.
-
----
-
-## CI Pipeline Overview
-The CI pipeline is designed to:
-- Provide fast feedback
-- Separate infrastructure failures from product failures
-- Avoid blocking development on non-actionable signals
-
-Details are documented in `/docs/ci-decisions.md`.
+- Validate workflows under **eventual consistency** rather than assuming immediate state convergence  
+- Test resilience against **partial failures and unreliable downstream dependencies**  
+- Showcase layered validation through:
+  - API tests  
+  - contract tests  
+  - integration tests  
+  - controlled chaos scenarios  
+- Maintain **high CI signal quality** by separating fast PR checks from scheduled resilience suites  
+- Ensure the test suite remains scalable and maintainable as it grows to **1000+ tests**
 
 ---
 
-## What This Project Intentionally Does Not Cover
-- UI-heavy testing
-- Authentication/authorization
-- Production-grade infrastructure
-- Performance testing
+## Architecture Overview (Current Implementation)
 
-These exclusions are intentional and documented.
+This project currently models an order-processing workflow composed of three independently deployable services:
+
+- **Order Service** — orchestrates order placement and downstream interactions  
+- **Payment Service** — simulates payment processing, including unreliable behavior  
+- **Inventory Service** — validates and reserves stock availability  
+
+### High-Level Flow
+
+```
+Client / Tests
+     |
+     v
+Order Service
+     |
+     +-------------------+
+     |                   |
+     v                   v
+Payment Service      Inventory Service
+```
+
+### Key Characteristics
+
+- Multi-service workflow with real HTTP integration points  
+- Payment dependency can be unstable to validate resilience behavior  
+- Testing focuses on service interaction correctness rather than isolated mocks  
 
 ---
 
-## How to Use This Repository
-Instructions for running services and tests locally will be added here.
+## Test Suite Structure
 
-We keep service availability as an external precondition so tests remain simple, explicit, and stable; lifecycle orchestration belongs to infra tooling, not API tests.
-
-To Run a Test:
-Simply open a terminal and run
-mvn -pl tests/test-folder -Dtest=TestName test
-
-Where test-folder can be test-api, test-contract and test-integration.
-
+| Tag          | Purpose                                   | CI Frequency |
+|--------------|-------------------------------------------|--------------|
+| `unit`       | Fast isolated logic validation             | PR           |
+| `api`        | HTTP boundary correctness                  | PR           |
+| `contract`   | Producer/consumer compatibility checks     | PR           |
+| `integration`| Multi-service workflow validation          | PR/Nightly   |
+| `chaos`      | Resilience under controlled instability    | Nightly      |
+| `e2e`        | Critical full-system flows (low volume)    | Nightly      |
 
 ---
 
-## Future Improvements
-Known limitations and scalability considerations are documented to reflect real-world tradeoffs.
+## CI Execution Model
+
+- **Pull Requests** run fast deterministic suites (`unit`, `api`, `contract`, stable `integration`)
+- **Nightly pipelines** run extended integration and controlled chaos scenarios
+- Failures are expected to remain actionable and clearly attributable
+
+---
+
+## Quick Start (Run Locally)
+
+### Prerequisites
+- Docker + Docker Compose
+- Java + Maven
+
+### Start services
+
+```bash
+docker-compose up --build
+```
+
+### Run tests
+
+```bash
+mvn test
+```
+
+---
+
+## Documentation Entry Points
+
+- `TESTING_STRATEGY.md` → detailed principles and enforcement model  
+- `tests/` → layered test suite implementation  
+- `.github/workflows/ci.yml` → CI tiering and execution boundaries  
+
+---
+
+## Planned Extensions
+
+- **Dedicated Notification Worker**
+  - Asynchronous side effects are currently simulated via controlled background execution within services.
+  - A separate event-driven notification worker is a planned extension to demonstrate:
+    - failure isolation across processes
+    - delivery semantics (at-least-once, retries)
+    - idempotent event handling and dead-letter scenarios
+
+---
+
+## Portfolio Context
+
+This repository was built as a professional SDET showcase to demonstrate mature testing judgment for distributed, asynchronous systems, with emphasis on scalability, resilience, and CI signal quality.
