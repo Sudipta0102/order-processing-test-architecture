@@ -2,23 +2,30 @@
 
 ## How to Read This Repository (For Reviewers)
 
-- This repository is a **testing architecture showcase** focused on validating distributed, asynchronous workflows.
-- Start here:
-  - `TESTING_STRATEGY.md` → overall testing principles, taxonomy, and CI execution model
-  - `tests/` → tagged test layers (`unit`, `api`, `contract`, `integration`, `chaos`, `e2e`)
-  - `.github/workflows/ci.yml` → PR vs nightly validation strategy and failure signal separation
-- Key areas of focus:
+- This repository is a testing architecture showcase focused on validating distributed, asynchronous workflows.
+
+- Start with the core documentation:
+  - TESTING_STRATEGY.md:
+    - overall testing principles, taxonomy, async validation, and scalability model
+
+  - ci-decisions.md:
+    - CI tiering (PR vs nightly), tag-driven execution boundaries, and signal protection
+
+  - flakiness-playbook.md:
+    - accidental vs intentional instability, quarantine policy, and flakiness triage workflow
+
+- Then explore the implementation:
+  - tests/ → tagged test layers (api, contract, integration, chaos, e2e)
+  - .github/workflows/ci.yml → GitHub Actions workflow enforcing execution tiers
+  - app-services/ → order, payment (intentionally flaky), and inventory services
+- Key focus areas:
   - eventual consistency and async workflow validation
   - controlled downstream instability (intentional chaos)
   - scalable test suite design that remains reliable at 1000+ tests
 
----
-
 ## Project Summary
 
 A runnable distributed order-processing system designed to demonstrate a **mature test strategy** for async workflows, partial failures, and high-signal CI execution.
-
----
 
 ## Key Testing Goals (Why This Exists)
 
@@ -31,8 +38,6 @@ A runnable distributed order-processing system designed to demonstrate a **matur
   - controlled chaos scenarios  
 - Maintain **high CI signal quality** by separating fast PR checks from scheduled resilience suites  
 - Ensure the test suite remains scalable and maintainable as it grows to **1000+ tests**
-
----
 
 ## Architecture Overview (Current Implementation)
 
@@ -62,28 +67,23 @@ Payment Service      Inventory Service
 - Payment dependency can be unstable to validate resilience behavior  
 - Testing focuses on service interaction correctness rather than isolated mocks  
 
----
 
 ## Test Suite Structure
 
 | Tag          | Purpose                                   | CI Frequency |
 |--------------|-------------------------------------------|--------------|
-| `unit`       | Fast isolated logic validation             | PR           |
 | `api`        | HTTP boundary correctness                  | PR           |
 | `contract`   | Producer/consumer compatibility checks     | PR           |
 | `integration`| Multi-service workflow validation          | PR/Nightly   |
 | `chaos`      | Resilience under controlled instability    | Nightly      |
 | `e2e`        | Critical full-system flows (low volume)    | Nightly      |
 
----
 
 ## CI Execution Model
 
 - **Pull Requests** run fast deterministic suites (`unit`, `api`, `contract`, stable `integration`)
 - **Nightly pipelines** run extended integration and controlled chaos scenarios
 - Failures are expected to remain actionable and clearly attributable
-
----
 
 ## Quick Start (Run Locally)
 
@@ -122,7 +122,6 @@ mvn test
     - delivery semantics (at-least-once, retries)
     - idempotent event handling and dead-letter scenarios
 
----
 
 ## Portfolio Context
 
