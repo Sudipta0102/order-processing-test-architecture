@@ -51,11 +51,12 @@ Focus on test strategy, trade-offs, and CI signal quality, not tool usage.
     - expected chaos conditions
 
 
+- Assertions are expressed using **AssertJ** for readable, fluent validation of final system state and side effects.
+
+
 - The suite is structured to remain maintainable at scale
   - consistent tagging, ownership, and execution rules prevent uncontrolled test growth
   - the strategy supports expansion to large test volumes without degrading CI reliability
-
-
 ## 3. System Under Test (Testing View)
 
 - This repository models a distributed order-processing workflow composed of multiple independently deployed services
@@ -88,6 +89,7 @@ Focus on test strategy, trade-offs, and CI signal quality, not tool usage.
   - delayed processing and asynchronous completion
   - message-driven workflows and worker execution
   - isolation of failure domains across services
+
 
 - The test strategy assumes that meaningful validation must account for:
   - timing variability
@@ -173,6 +175,9 @@ Focus on test strategy, trade-offs, and CI signal quality, not tool usage.
 - Tests avoid fixed delays and arbitrary sleeps
   - static waiting introduces flakiness and inflates execution time
   - assertions are implemented using time-bounded polling or await-based mechanisms
+  - Asynchronous outcomes are validated using **Awaitility** with time-bounded polling rather than fixed delays.
+    - this ensures tests remain stable under variable execution timing
+    - failures provide clear diagnostics when convergence does not occur within the expected window
 
 
 - Asynchronous outcomes are validated using bounded await-style assertions rather than sleeps, e.g.:
