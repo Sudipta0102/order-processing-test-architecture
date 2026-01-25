@@ -35,7 +35,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Spring Boot Actuator (Health Endpoints for CI Readiness) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
     </dependencies>
+
 
 
     <build>
