@@ -20,6 +20,7 @@ import java.util.Map;
  *
  */
 @Tag("integration")
+@Tag("e2e")
 public class OrderEndToEndHappyPathIT extends BaseIntegrationTest{
 
 

@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 @Tag("integration")
+@Tag("chaos")
+@Tag("payment-fail")
 public class OrderPaymentFailureIT extends BaseIntegrationTest{
 
     @BeforeEach
