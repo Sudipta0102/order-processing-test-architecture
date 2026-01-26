@@ -20,7 +20,6 @@ import java.util.UUID;
  * - Order eventually transitions to FAILED
  */
 @Tag("api")
-@Tag("chaos")
 @Tag("inventory-down")
 public class OrderApiInventoryFailureTest extends BaseApiTest{
 
