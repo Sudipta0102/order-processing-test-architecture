@@ -79,8 +79,55 @@ jobs:
         run: mvn -pl tests/test-integration verify "-Dgroups=integration,e2e"
         # -DexcludeTags=inventory-fail,payment-fail
 
+        # CHAOS SUITES
+        # 10. Inventory Down Chaos Suite (Nightly Only)
+      - name: Run inventory-down tests (cron is set, nightly only)
+        if: github.event_name == 'schedule'
+        run: |
+          echo "Stopping Inventory service..."
+          docker compose stop inventory-service
+          
+          echo "Verifying Inventory-service is DOWN..."
+          curl -f http://localhost:8083/actuator/health && exit 1 || echo "Inventory is down as expected" 
+          
+          echo "Verifying Order + Payment are still UP..."
+          curl -f http://localhost:8081/actuator/health
+          curl -f http://localhost:8082/actuator/health
+
+          echo "Running inventory-down suite..."
+          mvn -pl tests/tet-api test "-Dgroups=inventory-down"
+
+        # 11. Payment Down Chaos Suite (Nightly Only)
+      - name: Run payment-down tests (nightly only)
+        if: github.event_name == 'schedule'
+        run: |
+          echo "Restarting services..."
+          docker compose up -d
+          
+          echo "Waiting for services to stabilize..."
+          for service in 8081 8082 8083; do
+            for i in {1..30}; do
+              curl -f http://localhost:$svc/actuator/health && break
+              sleep 2
+            done
+          done
+          
+          echo "Stopping payment-service..."
+          docker compose stop payment-service
+          
+          echo "Verifying payment-service is DOWN..."
+          curl -f http://localhost:8082/actuator/health && exit 1 || echo "Payment is down as expected."
+          
+          echo "Verifying Order + Inventory are still UP..."
+          curl -f http://localhost:8081/actuator/health
+          curl -f http://localhost:8083/actuator/health
+          
+          echo "Running payment-down suite..."
+          mvn -pl tests/test-api test "-Dgroups=payment-down"
+          
+
         # REPORTING + CLEANUP
-        # 10. Upload Test Reports (Always)
+        # 12. Upload Test Reports (Always)
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -88,7 +135,7 @@ jobs:
           name: test-reports
           path: "**/target/surefire-reports/"
 
-        # 11. Shutdown Environment
+        # 13. Shutdown Environment
       - name: Shutdown services
         if: always()
         run: docker compose down
