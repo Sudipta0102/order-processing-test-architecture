@@ -1,0 +1,91 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: ["main"]
+
+  push:
+    branches: ["main"]
+
+  schedule:
+    # chaos testing at night + testing under partial degradation of systems
+    - cron: "0 2 * * *"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. setup Java 17
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+
+      # 3. cache maven dependencies
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: | 
+            ${{ runner.os }}-maven-
+      
+      # 4. build all modules skipping tests
+      - name: build all modules skipping tests
+        run: mvn clean install -DskipTests
+
+      # 5. start services (Docker compose)
+      - name: start services
+        run: docker compose up -d
+
+      # 6. wait for service readiness
+      - name: wait for services to be ready
+        run: |
+          echo "waiting for order service..."
+          for i in {1..30}; do
+            curl -f http://localhost:8081/actuator/health && break
+            sleep 2
+          done
+          
+          echo "waiting for payment service..."
+          for i in {1..30}; do
+            curl -f http://localhost:8082/actuator/health && break
+            sleep 2
+          done
+          
+          echo "waiting for inventory service..."
+          for i in {1..30}; do
+            curl -f http://localhost:8083/actuator/health && break
+            sleep 2
+          done
+
+        # PR GATING (Stable + Deterministic)
+        # 7. Contract Tests (Always)
+      - name: Run contract tests
+        run: mvn -pl tests/test-contract test -DincludeTags=contract
+
+        # 8. API Tests (Stable Only)
+      - name: Run API tests (PR gating)
+        run: mvn -pl tests/test-api test -DincludeTags=api -DexcludeTags=inventory-down,payment-down,chaos
+          
+        # 9. Integration Tests (Stable Only)
+      - name: Run integration tests (PR gating)
+        run: mvn -pl tests/test-integration test -DincludeTags=integration,e2e
+        # -DexcludeTags=inventory-fail,payment-fail
+
+        # REPORTING + CLEANUP
+        # 10. Upload Test Reports (Always)
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: "**/target/surefire-reports/"
+
+        # 11. Shutdown Environment
+      - name: Shutdown services
+        if: always()
+        run: docker compose down
