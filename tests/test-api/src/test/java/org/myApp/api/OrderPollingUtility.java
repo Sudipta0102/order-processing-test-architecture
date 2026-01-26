@@ -5,6 +5,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.awaitility.Awaitility;
 
+import java.net.ConnectException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
@@ -40,13 +41,14 @@ public class OrderPollingUtility {
         Awaitility.await()
                 .atMost(timeout)
                 .pollInterval(pollInterval)
-                .ignoreExceptions()
+               // .ignoreExceptions(e->e instanceof ConnectException)
                 .until(() ->{
                     Response response = RestAssured
                             .given()
                             .when()
-                            .get("/orders"+orderId)
+                            .get("/orders/"+orderId)
                             .then()
+                            .statusCode(200)
                             .extract().response();
 
                     String status  = response.jsonPath().getString("status");
