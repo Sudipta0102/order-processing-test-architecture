@@ -76,7 +76,7 @@ jobs:
           
         # 9. Integration Tests (Stable Only)
       - name: Run integration tests (PR gating)
-        run: mvn -pl tests/test-integration test "-Dgroups=integration,e2e"
+        run: mvn -pl tests/test-integration verify "-Dgroups=integration,e2e"
         # -DexcludeTags=inventory-fail,payment-fail
 
         # REPORTING + CLEANUP
