@@ -68,15 +68,15 @@ jobs:
         # PR GATING (Stable + Deterministic)
         # 7. Contract Tests (Always)
       - name: Run contract tests
-        run: mvn -pl tests/test-contract test -DincludeTags=contract
+        run: mvn -pl tests/test-contract test "-Dgroups=contract"
 
         # 8. API Tests (Stable Only)
       - name: Run API tests (PR gating)
-        run: mvn -pl tests/test-api test -DincludeTags=api -DexcludeTags=inventory-down,payment-down,chaos
+        run: mvn -pl tests/test-api test "-Dgroups=api" "-DexcludedGroups=inventory-down,payment-down,chaos"
           
         # 9. Integration Tests (Stable Only)
       - name: Run integration tests (PR gating)
-        run: mvn -pl tests/test-integration test -DincludeTags=integration,e2e
+        run: mvn -pl tests/test-integration test "-Dgroups=integration,e2e"
         # -DexcludeTags=inventory-fail,payment-fail
 
         # REPORTING + CLEANUP
