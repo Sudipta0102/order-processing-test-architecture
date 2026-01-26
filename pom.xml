@@ -25,6 +25,10 @@
     <properties>
         <java.version>17</java.version>
         <spring.boot.version>3.2.5</spring.boot.version>
+
+        <!-- Default empty values for tag filtering -->
+        <groups></groups>
+        <excludedGroups></excludedGroups>
     </properties>
 
     <dependencyManagement>
@@ -53,8 +57,27 @@
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.5.2</version>
+
+                    <configuration>
+                        <!-- JUnit5 Tag Filtering -->
+                        <groups>${groups}</groups>
+                        <excludedGroups>${excludedGroups}</excludedGroups>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>3.5.2</version>
+
+                    <configuration>
+                        <!-- JUnit5 Tag Filtering -->
+                        <groups>${groups}</groups>
+                        <excludedGroups>${excludedGroups}</excludedGroups>
+                    </configuration>
+
                     <executions>
                         <execution>
                             <goals>
@@ -66,9 +89,6 @@
                 </plugin>
             </plugins>
     <!--    </pluginManagement>  -->
-
-
-
     </build>
 
 </project>
