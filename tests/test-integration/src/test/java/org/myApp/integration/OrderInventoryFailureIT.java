@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("integration")
-@Tag("chaos")
 @Tag("inventory-fail")
 public class OrderInventoryFailureIT extends BaseIntegrationTest{
 
