@@ -95,7 +95,7 @@ jobs:
           curl -f http://localhost:8082/actuator/health
 
           echo "Running inventory-down suite..."
-          mvn -pl tests/tet-api test "-Dgroups=inventory-down"
+          mvn -pl tests/test-api test "-Dgroups=inventory-down"
 
         # 11. Payment Down Chaos Suite (Nightly Only)
       - name: Run payment-down tests (nightly only)
