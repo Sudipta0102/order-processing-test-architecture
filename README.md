@@ -84,6 +84,7 @@ Payment Service      Inventory Service
 - **Pull Requests** run fast deterministic suites (`unit`, `api`, `contract`, stable `integration`)
 - **Nightly pipelines** run extended integration and controlled chaos scenarios
 - Failures are expected to remain actionable and clearly attributable
+- PR runs stable suites only. Chaos scenarios execute nightly to preserve CI trust.
 
 ## Quick Start (Run Locally)
 
